@@ -8,6 +8,9 @@ text = sys.stdin.read()
 
 # replace printable characters
 replacement = [
+	('“', '``'),
+	('”', '\'\''),
+	('’', '\''),
 	('\\', '\\textbackslash '),
 	('*', '\\textasteriskcentered '),
 	('_', '\\_'),
@@ -17,6 +20,7 @@ replacement = [
 	('{', '\\{'),
 	('}', '\\}'),
 	('&', '\\&'),
+	('…', '\\dots '),
 	('~', '\\~{}'),
 	('^', '\\^{}')
 ]
