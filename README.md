@@ -1,7 +1,8 @@
 # LaTeX Sanitizer
 ## Usage
-	cat in.txt | ./sanitize.py > out.tex
+	./sanitize.py < in.txt > out.tex
+	./sanitize.py in.txt > out.tex
 
 ## Copyright
-Copyright © 2015 Stefan Schindler  
-Licensed under GNU GPL v3
+Copyright © 2016 Stefan Schindler  
+Licensed under the GNU General Public License Version 3
