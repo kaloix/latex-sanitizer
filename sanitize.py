@@ -1,47 +1,48 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 
-import string
+import fileinput
 import sys
 
-# read stdin
-text = sys.stdin.read()
 
-# replace printable characters
-replacement = [
-	('“', '``'),
-	('”', '\'\''),
-	('’', '\''),
-	('\\', '\\textbackslash '),
-	('*', '\\textasteriskcentered '),
-	('_', '\\_'),
-	('#', '\\#'),
-	('$', '\\$'),
-	('%', '\\%'),
-	('{', '\\{'),
-	('}', '\\}'),
-	('&', '\\&'),
-	('…', '\\dots '),
-	('~', '\\~{}'),
-	('^', '\\^{}')
-]
-illegal = set()
-for old, new in replacement:
-	if old in text:
-		text = text.replace(old, new)
-		illegal.add(old)
-if illegal:
-	print('Replaced characters: "{}"'.format(''.join(illegal)), file=sys.stderr)
+REPLACE = {
+	'“': '``',
+	'”': '\'\'',
+	'’': '\'',
+	'\\': '\\textbackslash ',
+	'*': '\\textasteriskcentered ',
+	'_': '\\_',
+	'#': '\\#',
+	'$': '\\$',
+	'%': '\\%',
+	'{': '\\{',
+	'}': '\\}',
+	'&': '\\&',
+	'…': '\\dots ',
+	'~': '\\~{}',
+	'^': '\\^{}'}
+DELETE = ''
 
-# delete special characters
-allowed = set(string.ascii_letters)
-allowed |= set(string.digits)
-allowed |= set(string.punctuation)
-allowed.add('\n')
-illegal = set(text) - allowed
-for char in illegal:
-	text = text.replace(char, ' ')
-if illegal:
-	print('Deleted characters: "{}"'.format(''.join(illegal)), file=sys.stderr)
+def main():
+	replaced, deleted = set(), set()
+	for line in fileinput.input():
+		line, replaced_ = replace(line, REPLACE)
+		replaced.update(replaced_)
+		line, deleted_ = delete(line, DELETE)
+		deleted.update(deleted_)
+		sys.stdout.write(line)
+	print('Replaced characters: {}'.format(' '.join(sorted(replaced))), file=sys.stderr)
+	print('Deleted characters: {}'.format(' '.join(sorted(deleted))), file=sys.stderr)
+	
 
-# write stdout
-print(text)
+def replace(text, table):
+	text = text.translate(table)
+	replaced = set(text) & set(table)
+	return text, replaced
+
+def delete(text, illegals):
+	table = {char: None for char in illegals}
+	text = text.translate(table)
+	return text, ''
+
+if __name__ == '__main__':
+	main()
